@@ -60,6 +60,15 @@ void returnBook(BookShelf *books){
     printf("\nBook Returned Successfully By Student %d",stdID);
 }
 
+void result(BookShelf *books , int n){
+    printf("\nList of all available books in the library :-\n");
+    for(int i=0; i<n ; i++){
+        printf("\nBook %d ID : %d",i+1,books[i].ID);
+        printf("\nBook %d Title : %s",i+1,books[i].title);
+        printf("\nBook %d Author : %s",i+1,books[i].author);
+    }
+}
+
 int main(){
     int choice , n = 2 , quit=1;
     BookShelf books[100]={
@@ -87,9 +96,8 @@ int main(){
         else if(choice == 3){
             returnBook(books);
         }
-        else if(choice == 4){}
-        else if(choice == 5){
-            break;
+        else if(choice == 4){
+            result(books , n);
         }
         else{
             printf("\nInvalid Input");
