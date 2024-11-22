@@ -8,7 +8,6 @@ typedef struct BookShelf
     char author[50];
 }BookShelf;
 
-
 void addBook( BookShelf *books){
     printf("\nEnter Book ID : ");
     scanf("%d",&books->ID);
@@ -33,7 +32,7 @@ void borrowBook (BookShelf *books , int n){
     scanf("%d",&bid);
      for (int i = 0; i < n; i++) {
         if (books[i].ID == bid) { 
-            printf("Book is available.\n");
+            printf("\nBook is available.\n");
             printf("Book Title: %s\n", books[i].title);
             printf("Book Author: %s\n", books[i].author);
             found = 1;
@@ -41,16 +40,34 @@ void borrowBook (BookShelf *books , int n){
         }
     }
     if(found == 0 ){
-        printf("There was no Book With That Book ID\n");
+        printf("\nThere was no Book With That Book ID");
     }else{
-        printf("Book Is Issued To You\n");
+        printf("\nBook Borrowed Successfully by Student %d",stdID);
     }
 }
 
+void returnBook(BookShelf *books){
+    int bid , stdID , late=0;
+    printf("\nEnter Student ID : ");
+    scanf("%d",&stdID);
+    printf("Enter Book ID : ");
+    scanf("%d",&bid);
+    printf("Enter Number Of Days Late : ");
+    scanf("%d",&late);
+    if(late > 0){
+        printf("Fine of Rs. %d Applied",late*10);
+    }
+    printf("\nBook Returned Successfully By Student %d",stdID);
+}
 
 int main(){
-    int choice , n = 0;
-    BookShelf books[100];
+    int choice , n = 2;
+    BookShelf books[100]={
+    {101, "It Ends With Us", "Colleen Hoover"},
+    {102, "Berserk", "Kentaro Miura"},
+    {103, "Vinland Saga", "Makato Yukimura"},
+    };
+
     printf("\n************* WELCOME TO E-LIBRARY *************");
     printf("\n\nEnter   1 To Add A Book");
     printf("\n\t2 To Borrow A Book");
@@ -65,7 +82,9 @@ int main(){
     else if(choice == 2){
         borrowBook(books , n);
     }
-    else if(choice == 3){}
+    else if(choice == 3){
+        returnBook(books);
+    }
     else if(choice == 4){}
     else{
         printf("\nInvalid Input");
