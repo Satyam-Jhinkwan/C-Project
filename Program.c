@@ -97,12 +97,13 @@ void result(BookShelf *books ,BookShelf *student , int n , int m){
         printf("\nBook %d Author : %s\n",i+1,books[i].author);
     }
 
-    printf("\n\nList of books Borrowd by the student :-\n");
+    printf("\n\nList of books Borrowd by the students:-\n");
     for(int i=0; i<m ; i++){
         printf("\n***** BOOK %d *****",i+1);
         printf("\nBook %d ID : %d",i+1,student[i].ID);
         printf("\nBook %d Title : %s",i+1,student[i].title);
-        printf("\nBook %d Author : %s\n",i+1,student[i].author);
+        printf("\nBook %d Author : %s",i+1,student[i].author);
+        printf("\nBorrowed By Student %d\n",student[i].borrowedByStudentID);
     }
 }
 
