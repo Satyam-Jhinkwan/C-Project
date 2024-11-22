@@ -6,6 +6,7 @@ typedef struct BookShelf
     int ID;
     char title[50];
     char author[50];
+    int borrowedByStudentID;
 }BookShelf;
 
 void addBook( BookShelf *books){
@@ -24,55 +25,64 @@ void addBook( BookShelf *books){
     printf("\nBook Added Successfully :)");
 }
 
-void borrowBook (BookShelf *books , BookShelf *student ,int n , int *m){
-    int bid , found = 0 , stdID;
+void borrowBook(BookShelf *books, BookShelf *student, int n, int *m) {
+    int bid, found = 0, stdID;
     printf("\nEnter Student ID : ");
-    scanf("%d",&stdID);
+    scanf("%d", &stdID);
     printf("Enter Book ID : ");
-    scanf("%d",&bid);
-     for (int i = 0; i < n; i++) {
+    scanf("%d", &bid);
+
+    for (int i = 0; i < n; i++) {
         if (books[i].ID == bid) { 
+            if (books[i].borrowedByStudentID != 0) {
+                printf("\nThis book is already borrowed by Student %d\n", books[i].borrowedByStudentID);
+                return;
+            }
             printf("\nBook is available.\n");
             printf("Book Title: %s\n", books[i].title);
             printf("Book Author: %s\n", books[i].author);
+            books[i].borrowedByStudentID = stdID;
             student[*m] = books[i];
             found = 1;
             break;
         }
     }
-    if(found == 0 ){
-        printf("\nThere was no Book With That Book ID");
-    }else{
-        printf("\nBook Borrowed Successfully by Student %d",stdID);
+
+    if (found == 0) {
+        printf("\nThere was no Book With That Book ID\n");
+    } else {
+        printf("\nBook Borrowed Successfully by Student %d\n", stdID);
         (*m)++;
     }
 }
 
-void returnBook(BookShelf *books, BookShelf *student, int *m){
-    int bid, stdID, late = 0,found = 0;
+void returnBook(BookShelf *books, BookShelf *student, int *m) {
+    int bid, stdID, late = 0, found = 0;
     printf("\nEnter Student ID : ");
     scanf("%d", &stdID);
     printf("Enter Book ID : ");
     scanf("%d", &bid);
     printf("Enter Number Of Days Late : ");
     scanf("%d", &late);
-    for(int i = 0; i < *m; i++) {
-        if(student[i].ID == bid) {
+
+    for (int i = 0; i < *m; i++) {
+        if (student[i].ID == bid && student[i].borrowedByStudentID == stdID) {
             student[i].ID = 0;
             strcpy(student[i].title, "");
             strcpy(student[i].author, "");
+            student[i].borrowedByStudentID = 0; 
             found = 1;
             break;
         }
     }
 
-    if(found == 0) {
+    if (found == 0) {
         printf("\nNo such book was borrowed by this student.\n");
     } else {
-        if(late > 0) {
-            printf("Fine of Rs. %d Applied", late * 10);
+        if (late > 0) {
+            printf("Fine of Rs. %d Applied\n", late * 10);
         }
-        printf("\nBook Returned Successfully By Student %d", stdID);
+        printf("\nBook Returned Successfully By Student %d\n", stdID);
         (*m)--;
     }
 }
@@ -81,22 +91,23 @@ void returnBook(BookShelf *books, BookShelf *student, int *m){
 void result(BookShelf *books ,BookShelf *student , int n , int m){
     printf("\nList of all available books in the library :-\n");
     for(int i=0; i<n ; i++){
+        printf("\n***** BOOK %d *****",i+1);
         printf("\nBook %d ID : %d",i+1,books[i].ID);
         printf("\nBook %d Title : %s",i+1,books[i].title);
-        printf("\nBook %d Author : %s",i+1,books[i].author);
+        printf("\nBook %d Author : %s\n",i+1,books[i].author);
     }
 
     printf("\n\nList of books Borrowd by the student :-\n");
     for(int i=0; i<m ; i++){
+        printf("\n***** BOOK %d *****",i+1);
         printf("\nBook %d ID : %d",i+1,student[i].ID);
         printf("\nBook %d Title : %s",i+1,student[i].title);
-        printf("\nBook %d Author : %s",i+1,student[i].author);
+        printf("\nBook %d Author : %s\n",i+1,student[i].author);
     }
-
 }
 
 int main(){
-    int choice , n = 2 , quit=1 , m=0;
+    int choice , n = 3 , quit=1 , m=0;
     BookShelf books[100]={
     {101, "It Ends With Us", "Colleen Hoover"},
     {102, "Berserk", "Kentaro Miura"},
@@ -130,9 +141,9 @@ int main(){
             printf("\nInvalid Input");
         }
         
-        printf("\n\nEnter 0 to quit or input anything to continue : ");
+        printf("\n\nEnter 0 to quit or any number to continue : ");
         scanf("%d",&quit);
-        printf("\n\n********************");
     }
+    printf("\n\n**********************************************");
     return 0;
 }
