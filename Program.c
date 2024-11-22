@@ -24,7 +24,7 @@ void addBook( BookShelf *books){
     printf("\nBook Added Successfully :)");
 }
 
-void borrowBook (BookShelf *books , int n){
+void borrowBook (BookShelf *books , BookShelf *student ,int n , int *m){
     int bid , found = 0 , stdID;
     printf("\nEnter Student ID : ");
     scanf("%d",&stdID);
@@ -35,6 +35,7 @@ void borrowBook (BookShelf *books , int n){
             printf("\nBook is available.\n");
             printf("Book Title: %s\n", books[i].title);
             printf("Book Author: %s\n", books[i].author);
+            student[*m] = books[i];
             found = 1;
             break;
         }
@@ -43,40 +44,66 @@ void borrowBook (BookShelf *books , int n){
         printf("\nThere was no Book With That Book ID");
     }else{
         printf("\nBook Borrowed Successfully by Student %d",stdID);
+        (*m)++;
     }
 }
 
-void returnBook(BookShelf *books){
-    int bid , stdID , late=0;
+void returnBook(BookShelf *books, BookShelf *student, int *m){
+    int bid, stdID, late = 0,found = 0;
     printf("\nEnter Student ID : ");
-    scanf("%d",&stdID);
+    scanf("%d", &stdID);
     printf("Enter Book ID : ");
-    scanf("%d",&bid);
+    scanf("%d", &bid);
     printf("Enter Number Of Days Late : ");
-    scanf("%d",&late);
-    if(late > 0){
-        printf("Fine of Rs. %d Applied",late*10);
+    scanf("%d", &late);
+    for(int i = 0; i < *m; i++) {
+        if(student[i].ID == bid) {
+            student[i].ID = 0;
+            strcpy(student[i].title, "");
+            strcpy(student[i].author, "");
+            found = 1;
+            break;
+        }
     }
-    printf("\nBook Returned Successfully By Student %d",stdID);
+
+    if(found == 0) {
+        printf("\nNo such book was borrowed by this student.\n");
+    } else {
+        if(late > 0) {
+            printf("Fine of Rs. %d Applied", late * 10);
+        }
+        printf("\nBook Returned Successfully By Student %d", stdID);
+        (*m)--;
+    }
 }
 
-void result(BookShelf *books , int n){
+
+void result(BookShelf *books ,BookShelf *student , int n , int m){
     printf("\nList of all available books in the library :-\n");
     for(int i=0; i<n ; i++){
         printf("\nBook %d ID : %d",i+1,books[i].ID);
         printf("\nBook %d Title : %s",i+1,books[i].title);
         printf("\nBook %d Author : %s",i+1,books[i].author);
     }
+
+    printf("\n\nList of books Borrowd by the student :-\n");
+    for(int i=0; i<m ; i++){
+        printf("\nBook %d ID : %d",i+1,student[i].ID);
+        printf("\nBook %d Title : %s",i+1,student[i].title);
+        printf("\nBook %d Author : %s",i+1,student[i].author);
+    }
+
 }
 
 int main(){
-    int choice , n = 2 , quit=1;
+    int choice , n = 2 , quit=1 , m=0;
     BookShelf books[100]={
     {101, "It Ends With Us", "Colleen Hoover"},
     {102, "Berserk", "Kentaro Miura"},
     {103, "Vinland Saga", "Makato Yukimura"},
     };
 
+    BookShelf student[100];
     printf("\n************* WELCOME TO E-LIBRARY *************");
     
     while (quit != 0){
@@ -91,13 +118,13 @@ int main(){
             n++;  
         }
         else if(choice == 2){
-            borrowBook(books , n);
+            borrowBook(books ,student, n , &m);
         }
         else if(choice == 3){
-            returnBook(books);
+            returnBook(books,student,&m);
         }
         else if(choice == 4){
-            result(books , n);
+            result(books , student , n , m);
         }
         else{
             printf("\nInvalid Input");
