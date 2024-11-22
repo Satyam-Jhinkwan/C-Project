@@ -61,7 +61,7 @@ void returnBook(BookShelf *books){
 }
 
 int main(){
-    int choice , n = 2;
+    int choice , n = 2 , quit=1;
     BookShelf books[100]={
     {101, "It Ends With Us", "Colleen Hoover"},
     {102, "Berserk", "Kentaro Miura"},
@@ -70,12 +70,11 @@ int main(){
 
     printf("\n************* WELCOME TO E-LIBRARY *************");
     
-    while (1){
+    while (quit != 0){
         printf("\n\nEnter   1 To Add A Book");
         printf("\n\t2 To Borrow A Book");
         printf("\n\t3 To Return A Book");
         printf("\n\t4 To Generate Reports : ");
-        printf("\n\t5 To Close : ");
         scanf("%d",&choice);
         getchar();
         if(choice == 1){
@@ -95,6 +94,9 @@ int main(){
         else{
             printf("\nInvalid Input");
         }
+        
+        printf("\n\nEnter 0 to quit or input anything to continue : ");
+        scanf("%d",&quit);
         printf("\n\n********************");
     }
     return 0;
