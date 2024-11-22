@@ -9,7 +9,7 @@ typedef struct BookShelf
 }BookShelf;
 
 
-int addBook( BookShelf *books){
+void addBook( BookShelf *books){
     printf("\nEnter Book ID : ");
     scanf("%d",&books->ID);
     getchar();
@@ -23,6 +23,28 @@ int addBook( BookShelf *books){
     books->author[strcspn(books->author, "\n")] = 0; 
         
     printf("\nBook Added Successfully :)");
+}
+
+void borrowBook (BookShelf *books , int n){
+    int bid , found = 0 , stdID;
+    printf("\nEnter Student ID : ");
+    scanf("%d",&stdID);
+    printf("Enter Book ID : ");
+    scanf("%d",&bid);
+     for (int i = 0; i < n; i++) {
+        if (books[i].ID == bid) { 
+            printf("Book is available.\n");
+            printf("Book Title: %s\n", books[i].title);
+            printf("Book Author: %s\n", books[i].author);
+            found = 1;
+            break;
+        }
+    }
+    if(found == 0 ){
+        printf("There was no Book With That Book ID\n");
+    }else{
+        printf("Book Is Issued To You\n");
+    }
 }
 
 
@@ -40,7 +62,9 @@ int main(){
         addBook(&books[n]);
         n++;  
     }
-    else if(choice == 2){}
+    else if(choice == 2){
+        borrowBook(books , n);
+    }
     else if(choice == 3){}
     else if(choice == 4){}
     else{
