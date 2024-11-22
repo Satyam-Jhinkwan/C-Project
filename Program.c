@@ -61,7 +61,7 @@ void returnBook(BookShelf *books){
 }
 
 int main(){
-    int choice , n = 2, quit = 1;
+    int choice , n = 2;
     BookShelf books[100]={
     {101, "It Ends With Us", "Colleen Hoover"},
     {102, "Berserk", "Kentaro Miura"},
