@@ -22,6 +22,7 @@ void addBook( BookShelf *books){
     fgets(books->author, sizeof(books->author), stdin);
     books->author[strcspn(books->author, "\n")] = 0; 
         
+    books->borrowedByStudentID = 0;
     printf("\nBook Added Successfully :)");
 }
 
@@ -43,6 +44,7 @@ void borrowBook(BookShelf *books, BookShelf *student, int n, int *m) {
             printf("Book Author: %s\n", books[i].author);
             books[i].borrowedByStudentID = stdID;
             student[*m] = books[i];
+            (*m)++;
             found = 1;
             break;
         }
@@ -56,7 +58,7 @@ void borrowBook(BookShelf *books, BookShelf *student, int n, int *m) {
     }
 }
 
-void returnBook(BookShelf *books, BookShelf *student, int *m) {
+void returnBook(BookShelf *books, BookShelf *student, int n, int *m) {
     int bid, stdID, late = 0, found = 0;
     printf("\nEnter Student ID : ");
     scanf("%d", &stdID);
@@ -65,45 +67,53 @@ void returnBook(BookShelf *books, BookShelf *student, int *m) {
     printf("Enter Number Of Days Late : ");
     scanf("%d", &late);
 
-    for (int i = 0; i < *m; i++) {
-        if (student[i].ID == bid && student[i].borrowedByStudentID == stdID) {
-            student[i].ID = 0;
-            strcpy(student[i].title, "");
-            strcpy(student[i].author, "");
-            student[i].borrowedByStudentID = 0; 
+    for (int i = 0; i < n; i++) {
+        if (books[i].ID == bid && books[i].borrowedByStudentID == stdID) {
+            books[i].borrowedByStudentID = 0; 
             found = 1;
             break;
         }
     }
 
-    if (found == 0) {
+    if (!found) {
         printf("\nNo such book was borrowed by this student.\n");
-    } else {
-        if (late > 0) {
-            printf("Fine of Rs. %d Applied\n", late * 10);
-        }
-        printf("\nBook Returned Successfully By Student %d\n", stdID);
-        (*m)--;
+        return;
     }
+
+    for (int i = 0; i < *m; i++) {
+        if (student[i].ID == bid && student[i].borrowedByStudentID == stdID) {
+            for (int j = i; j < *m - 1; j++) {
+                student[j] = student[j + 1];
+            }
+            (*m)--;
+            break;
+        }
+    }
+
+    if (late > 0) {
+        printf("Fine of Rs. %d Applied\n", late * 10);
+    }
+    printf("\nBook Returned Successfully By Student %d\n", stdID);
 }
 
-
-void result(BookShelf *books ,BookShelf *student , int n , int m){
+void result(BookShelf *books, BookShelf *student, int n, int m) {
     printf("\nList of all available books in the library :-\n");
-    for(int i=0; i<n ; i++){
-        printf("\n***** BOOK %d *****",i+1);
-        printf("\nBook %d ID : %d",i+1,books[i].ID);
-        printf("\nBook %d Title : %s",i+1,books[i].title);
-        printf("\nBook %d Author : %s\n",i+1,books[i].author);
+    for (int i = 0; i < n; i++) {
+        if (books[i].borrowedByStudentID == 0) {
+            printf("\n***** BOOK %d *****", i + 1);
+            printf("\nBook ID : %d", books[i].ID);
+            printf("\nBook Title : %s", books[i].title);
+            printf("\nBook Author : %s\n", books[i].author);
+        }
     }
 
-    printf("\n\nList of books Borrowd by the students:-\n");
-    for(int i=0; i<m ; i++){
-        printf("\n***** BOOK %d *****",i+1);
-        printf("\nBook %d ID : %d",i+1,student[i].ID);
-        printf("\nBook %d Title : %s",i+1,student[i].title);
-        printf("\nBook %d Author : %s",i+1,student[i].author);
-        printf("\nBorrowed By Student %d\n",student[i].borrowedByStudentID);
+    printf("\n\nList of books Borrowed by the students :-\n");
+    for (int i = 0; i < m; i++) {
+        printf("\n***** BOOK %d *****", i + 1);
+        printf("\nBook ID : %d", student[i].ID);
+        printf("\nBook Title : %s", student[i].title);
+        printf("\nBook Author : %s", student[i].author);
+        printf("\nBorrowed By Student %d\n", student[i].borrowedByStudentID);
     }
 }
 
@@ -133,7 +143,7 @@ int main(){
             borrowBook(books ,student, n , &m);
         }
         else if(choice == 3){
-            returnBook(books,student,&m);
+            returnBook(books,student,n,&m);
         }
         else if(choice == 4){
             result(books , student , n , m);
