@@ -44,7 +44,6 @@ void borrowBook(BookShelf *books, BookShelf *student, int n, int *m) {
             printf("Book Author: %s\n", books[i].author);
             books[i].borrowedByStudentID = stdID;
             student[*m] = books[i];
-            (*m)++;
             found = 1;
             break;
         }
@@ -80,12 +79,14 @@ void returnBook(BookShelf *books, BookShelf *student, int n, int *m) {
         return;
     }
 
+    found = 0;
     for (int i = 0; i < *m; i++) {
         if (student[i].ID == bid && student[i].borrowedByStudentID == stdID) {
             for (int j = i; j < *m - 1; j++) {
                 student[j] = student[j + 1];
             }
-            (*m)--;
+            (*m)--; 
+            found = 1;
             break;
         }
     }
@@ -95,6 +96,7 @@ void returnBook(BookShelf *books, BookShelf *student, int n, int *m) {
     }
     printf("\nBook Returned Successfully By Student %d\n", stdID);
 }
+
 
 void result(BookShelf *books, BookShelf *student, int n, int m) {
     printf("\nList of all available books in the library :-\n");
